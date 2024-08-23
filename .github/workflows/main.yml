@@ -4,8 +4,8 @@ name: Trigger auto deployment for demo-container
 
 env:
   # !!!! UPDATE THESE VARIABLE BELOW !!!!
-  AZURE_WEBAPP_NAME: demo-container
-  AZURE_GROUP_NAME: demo-container
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN}}
 
 # When this action will be executed
 on:
@@ -34,6 +34,13 @@ jobs:
           registry: demoevan.azurecr.io
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
+      
+      - name: Docker Hub credential
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN}}
 
       - name: Lowercase the repo name and username
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
